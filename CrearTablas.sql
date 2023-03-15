@@ -56,6 +56,8 @@ Fecha_Registro datetime default NOW()
 );
 
 ----- Fin Esteban ------
+
+----- Inicio Wander ------
 create table T_Rol(
 
 ID_Rol int primary key IDENTITY,
@@ -72,4 +74,4 @@ Descripcion varchar(250),
 Estado binary default 1,
 Fecha_Registro datetime default NOW()
 );
-
+----- Fin Wander ------
