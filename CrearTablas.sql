@@ -41,7 +41,7 @@ create table T_Producto(
 ID_Producto int primary key IDENTITY,
 Codigo varchar(30),
 Nombre varchar(50),
-Precio int(10),
+Precio decimal(10.2),
 ID_Categoria int references T_Categoria(ID_Categoria),
 Estado binary,
 Fecha_Registro datetime default NOW()
