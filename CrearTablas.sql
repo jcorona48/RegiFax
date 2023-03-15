@@ -74,4 +74,4 @@ Descripcion varchar(250),
 Estado binary default 1,
 Fecha_Registro datetime default NOW()
 );
------ Fin Wander ------
+------ Fin Wander -------
