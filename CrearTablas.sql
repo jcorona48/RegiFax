@@ -56,4 +56,20 @@ Fecha_Registro datetime default NOW()
 );
 
 ----- Fin Esteban ------
+create table T_Rol(
+
+ID_Rol int primary key IDENTITY,
+Nombre varchar(50),
+Estado binary default 1,
+Fecha_Registro datetime default NOW()
+);
+
+create table T_Departamento(
+
+ID_Departamento int primary key IDENTITY,
+Nombre varchar(50),
+Descripcion varchar(250),
+Estado binary default 1,
+Fecha_Registro datetime default NOW()
+);
 
