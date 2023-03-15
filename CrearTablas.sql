@@ -27,7 +27,7 @@ Telefono varchar(12),
 Direccion varchar(250),
 Fecha_Nacimiento date,
 Estado_Civil varchar(20),
-Estado binary,
+Estado binary default 1,
 Fecha_Registro datetime default NOW()
 );
 
