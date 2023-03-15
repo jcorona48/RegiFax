@@ -34,4 +34,21 @@ Fecha_Registro datetime default NOW()
 
 
 ----- Fin JOAN ------
+----- Inicio WANDER-----
+create table T_Rol(
+
+ID_Rol int primary key IDENTITY,
+Nombre varchar(50),
+Estado binary,
+Fecha_Registro datetime default NOW()
+);
+
+create table T_Departamento(
+
+ID_Departamento int primary key IDENTITY,
+Nombre varchar(50),
+Descripcion varchar(250),
+Estado binary,
+Fecha_Registro datetime default NOW()
+);
 
