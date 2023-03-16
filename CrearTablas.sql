@@ -78,16 +78,16 @@ Fecha_Registro datetime default NOW()
 
 
 ------ Inicio Milko-------
-create table T_venta(
+create table T_Ventas(
   
 ID_Venta int primary key IDENTITY,
-Codigo_Facruta int,
+Codigo_Facruta int(10),
 ID_Cliente int reference T_Cliente(ID_Cliente),
-Precio_Bruto decimal,
-Descuento decimal,
-ITEBIS decimal,
-Precio_Neto decimal,
-Estado bool,
+Precio_Bruto decimal(10,2),
+Descuento decimal(10,2),
+ITEBIS decimal(10,2),
+Precio_Neto decimal(10,2),
+Estado binary default 1,
 Fecha_Registro datetime default NOW()
 );
 
@@ -97,6 +97,6 @@ ID_VentaDetalle int primary key IDENTITY,
 ID_Ventas int reference T_ventas(ID_Ventas),
 ID_Producto int reference T_Producto(ID_Producto),
 Cantidad int,
-Precio_venta decimal
+Precio_venta decimal(10,2)
 );
 -------Final MIlko--------
