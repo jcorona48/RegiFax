@@ -85,7 +85,7 @@ Codigo_Facruta int(10),
 ID_Cliente int reference T_Cliente(ID_Cliente),
 Precio_Bruto decimal(10,2),
 Descuento decimal(10,2),
-ITEBIS decimal(10,2),
+ITBIS decimal(10,2),
 Precio_Neto decimal(10,2),
 Estado binary default 1,
 Fecha_Registro datetime default NOW()
