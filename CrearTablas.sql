@@ -88,7 +88,7 @@ Descuento decimal(10,2),
 ITBIS decimal(10,2),
 Precio_Neto decimal(10,2),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 create table T_VentaDetalle(
