@@ -75,3 +75,28 @@ Estado binary default 1,
 Fecha_Registro datetime default GETDATE()
 );
 ------ Fin Wander -------
+
+
+------ Inicio Milko-------
+create table T_Ventas(
+  
+ID_Venta int primary key IDENTITY,
+Codigo_Facruta int(10),
+ID_Cliente int reference T_Cliente(ID_Cliente),
+Precio_Bruto decimal(10,2),
+Descuento decimal(10,2),
+ITBIS decimal(10,2),
+Precio_Neto decimal(10,2),
+Estado binary default 1,
+Fecha_Registro datetime default NOW()
+);
+
+create table T_VentaDetalle(
+  
+ID_VentaDetalle int primary key IDENTITY,
+ID_Ventas int reference T_ventas(ID_Ventas),
+ID_Producto int reference T_Producto(ID_Producto),
+Cantidad int,
+Precio_venta decimal(10,2)
+);
+-------Final MIlko--------
