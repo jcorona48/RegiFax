@@ -81,8 +81,8 @@ Fecha_Registro datetime default GETDATE()
 create table T_Ventas(
   
 ID_Venta int primary key IDENTITY,
-Codigo_Facruta int(10),
-ID_Cliente int reference T_Cliente(ID_Cliente),
+Codigo_Facruta int,
+ID_Cliente int references T_Cliente(ID_Cliente),
 Precio_Bruto decimal(10,2),
 Descuento decimal(10,2),
 ITBIS decimal(10,2),
@@ -94,8 +94,8 @@ Fecha_Registro datetime default NOW()
 create table T_VentaDetalle(
   
 ID_VentaDetalle int primary key IDENTITY,
-ID_Ventas int reference T_ventas(ID_Ventas),
-ID_Producto int reference T_Producto(ID_Producto),
+ID_Venta int references T_Ventas(ID_Venta),
+ID_Producto int references T_Producto(ID_Producto),
 Cantidad int,
 Precio_venta decimal(10,2)
 );
