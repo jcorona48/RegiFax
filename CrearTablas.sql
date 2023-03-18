@@ -14,7 +14,7 @@ Fecha_Nacimiento date,
 ID_Departamento int references T_Departamento(ID_Departamento),
 Estado_Civil varchar(20),
 Estado binary,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 create table T_Cliente(
@@ -28,7 +28,7 @@ Direccion varchar(250),
 Fecha_Nacimiento date,
 Estado_Civil varchar(20),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 
@@ -44,7 +44,7 @@ Nombre varchar(50),
 Precio decimal(10,2),
 ID_Categoria int references T_Categoria(ID_Categoria),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 create table T_Categoria(
@@ -52,7 +52,7 @@ create table T_Categoria(
 ID_Categoria int primary key IDENTITY,
 Nombre varchar(50),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 ----- Fin Esteban ------
@@ -63,7 +63,7 @@ create table T_Rol(
 ID_Rol int primary key IDENTITY,
 Nombre varchar(50),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 
 create table T_Departamento(
@@ -72,7 +72,7 @@ ID_Departamento int primary key IDENTITY,
 Nombre varchar(50),
 Descripcion varchar(250),
 Estado binary default 1,
-Fecha_Registro datetime default NOW()
+Fecha_Registro datetime default GETDATE()
 );
 ------ Fin Wander -------
 
