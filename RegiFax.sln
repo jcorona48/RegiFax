@@ -5,15 +5,16 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaPresentacion", "CapaPresentacion\CapaPresentacion.csproj", "{5E1C6BD7-09F0-461E-B50D-32C7BE8A1A92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaDatos", "CapaDatos\CapaDatos.csproj", "{331FE187-354E-4891-B5A8-70CAE32AF604}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CapaDatos", "CapaDatos\CapaDatos.csproj", "{331FE187-354E-4891-B5A8-70CAE32AF604}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaEntidad", "CapaEntidad\CapaEntidad.csproj", "{ADD27A18-B8D7-4424-BA6D-91893A60D24D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CapaEntidad", "CapaEntidad\CapaEntidad.csproj", "{ADD27A18-B8D7-4424-BA6D-91893A60D24D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaNegocio", "CapaNegocio\CapaNegocio.csproj", "{B0B94D6C-E736-44B9-B364-B8C83E2E5E49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CapaNegocio", "CapaNegocio\CapaNegocio.csproj", "{B0B94D6C-E736-44B9-B364-B8C83E2E5E49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DBQuerys", "DBQuerys", "{584B937C-E4B8-417C-A091-EB45BFD1FC6F}"
 	ProjectSection(SolutionItems) = preProject
 		CrearTablas.sql = CrearTablas.sql
+		Procedimientos.sql = Procedimientos.sql
 	EndProjectSection
 EndProject
 Global
