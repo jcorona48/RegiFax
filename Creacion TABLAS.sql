@@ -76,8 +76,16 @@ Fecha_Registro datetime default GETDATE()
 create table T_VentaDetalle(
   
 ID_VentaDetalle int primary key IDENTITY,
-ID_Ventas int references T_ventas(ID_Ventas),
+ID_Ventas int references T_Ventas(ID_Venta),
 ID_Producto int references T_Producto(ID_Producto),
 Cantidad int,
 Precio_venta decimal(10,2)
+);
+
+create table T_Categoria(
+
+    ID_Categoria int primary key IDENTITY,
+    Nombre varchar(50),
+    Estado binary,
+    Fecha_Registro datetime
 );
