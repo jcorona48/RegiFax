@@ -301,6 +301,6 @@ as
 			end
 	end
 
-/* -------------------------------- FIN PROCEDIMIENTOS DEPARTAMENTO -------------------------------*/
+/* ------------------------------- FIN PROCEDIMIENTOS DEPARTAMENTO -------------------------------*/
 
 
