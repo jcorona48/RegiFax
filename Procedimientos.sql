@@ -246,6 +246,7 @@ as
 	end
 
 go
+
 CREATE PROC SP_EDITARDEPARTAMENTO
 (
 	@ID_Departamento int,
@@ -275,16 +276,15 @@ as
 			end
 	end
 
-
-
 go
+
 CREATE PROC SP_ELIMINARDEPARTAMENTO
 (
 	@ID_Departamento int,
 	@Resultado bit output,
 	@Mensaje varchar(500) output
 	)
-
+	 
 as 
 	begin
 		set @Resultado = 1
