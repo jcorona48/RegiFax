@@ -655,13 +655,13 @@ begin
 
 		begin transaction Registro
 
-		insert into T_Venta 
+		insert into T_Ventas 
 		(Codigo_Factura, ID_Empleado, ID_Cliente, Precio_Bruto, Descuento, ITBIS, Precio_Neto) values
 		(@Codigo_Factura,@ID_Empleado,@ID_Cliente,@Precio_Bruto,@Descuento,@ITBIS,@Precio_Neto)
 
 		set @ID_Venta = SCOPE_IDENTITY()
 
-		insert into T_Detalle_Venta(ID_Venta, ID_Producto, Cantidad, Precio_Venta)
+		insert into T_VentaDetalle(ID_Venta, ID_Producto, Cantidad, Precio_Venta)
 		select @ID_Venta, ID_Producto, Cantidad, Precio_Venta from @Venta_Detalle
 
 		commit transaction Registro
@@ -703,7 +703,7 @@ begin
 
 			commit transaction RetornarExistencias
 		
-			update T_Venta set Estado = 0 where ID_Venta = @ID_Venta
+			update T_Ventas set Estado = 0 where ID_Venta = @ID_Venta
 		end
 	end try
 
