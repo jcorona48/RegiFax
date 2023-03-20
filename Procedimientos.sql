@@ -297,7 +297,7 @@ as
 			Nombre = @Nombre,
 			Descripcion = @Descripcion,
 			Estado = @Estado
-			where ID_Categoria = @ID_Categoria
+			where ID_Departamento = @ID_Departamento
 
 		end
 		else 
@@ -350,16 +350,17 @@ CREATE PROC SP_REGISTRAREMPLEADO
 	@ID_Departamento int,
 	@Estado_Civil varchar(20),
 	@Estado bit,
-	@Fecha_Registro datetime
+	@Resultado int output,
+	@Mensaje varchar(500) output
 	)
 
 as 
 	begin
 		set @Resultado = 0
-		if not exists(select * from T_Empleado where Nombre = @Nombre)
+		if not exists(select * from T_Empleado where Cedula = @Cedula)
 		begin
-			insert into T_Emplado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado, Fecha_Registro) values 
-		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @ID_Departamento, @Estado_Civil, @Estado, @Fecha_Registro )
+			insert into T_Emplado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado) values 
+		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @ID_Departamento, @Estado_Civil, @Estado )
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
@@ -382,13 +383,13 @@ CREATE PROC SP_EDITAREMPLEADO
 	@ID_Departamento int,
 	@Estado_Civil varchar(20),
 	@Estado bit,
-	@Fecha_Registro datetime
+	@Resultado bit output,
+	@Mensaje varchar(500) output
 	)
-
 as 
 	begin
 		set @Resultado = 1
-		if not exists(select * from T_Empleado where Nombre = @Nombre and ID_Empleado != @ID_Empleado)
+		if not exists(select * from T_Empleado where Cedula = @Cedula and ID_Empleado != @ID_Empleado)
 		begin
 			update T_Empleado set
 			Nombre = @Nombre,
@@ -396,11 +397,10 @@ as
 			Cedula = @Cedula,
 			Telefono = @Telefono,
 			Direccion = @Direccion,
-			Feha_Nacimiento = @Fecha_Nacimiento,
+			Fecha_Nacimiento = @Fecha_Nacimiento,
 			ID_Departamento = @ID_Departamento,
 			Estado_Civil = @Estado_Civil,
-			Estado = @Estado,
-			Fecha_Registro = @Fecha_Registro
+			Estado = @Estado
 			
 			where ID_Empleado = @ID_Empleado
 
@@ -426,22 +426,23 @@ CREATE PROC SP_ELIMINAREMPLEADO
 	@ID_Departamento int,
 	@Estado_Civil varchar(20),
 	@Estado bit,
-	@Fecha_Registro datetime
+	@Resultado bit output,
+	@Mensaje varchar(500) output
 	)
 
 as 
 	begin
 		set @Resultado = 1
-		if not exists(select * from T_Empleado c 
-		inner join T_Departamento p on p.ID_Empleado = c.ID_Empleado
-		where c.ID_Empleado = @ID_Empleado)
+		if not exists(select * from T_Empleado e 
+		inner join T_Ventas v on v.ID_Empleado = e.ID_Empleado
+		where e.ID_Empleado = @ID_Empleado)
 		begin
 			delete top (1) from T_Empleado where ID_Empleado = @ID_Empleado
 		end
 		else 
 			begin
 				set @Resultado = 0
-				set @Mensaje = 'No se puede eliminar este empleado, esta relacionada con un departamento'
+				set @Mensaje = 'No se puede eliminar este empleado, esta relacionad@ a una vena'
 			end
 	end
 /* -------------------------------- FIN PROCEDIMIENTOS EMPLEADO --------------------------------*/
@@ -458,8 +459,9 @@ CREATE PROC SP_REGISTRARPRODUCTO
 	@Nombre varchar(50),
 	@Precio decimal(10,2),
 	@ID_Categoria int,
-	@Estado bit,
-	@Fecha_Registro datetime
+	@Estado bit,	
+	@Resultado int output,
+	@Mensaje varchar(500) output
 	)
 
 as 
@@ -468,7 +470,7 @@ as
 		if not exists(select * from T_Producto where Nombre = @Nombre)
 		begin
 			insert into T_Produco(Nombre, Precio, ID_Categoria, Estado) values
-			(@Nombre, @Precio, @ID_Categproa, @Estado)
+			(@Nombre, @Precio, @ID_Categoria, @Estado)
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
@@ -481,15 +483,15 @@ as
 go
 CREATE PROC SP_EDITARPRODUCTO
 (
-	@ID_Proucto int,
+	@ID_Producto int,
 	@Codigo varchar (30),
 	@Nombre varchar(50),
 	@Precio decimal(10,2),
 	@ID_Categoria int,
 	@Estado bit,
-	@Fecha_Registro datetime
+	@Resultado int output,
+	@Mensaje varchar(500) output
 	)
-
 as 
 	begin
 		set @Resultado = 1
@@ -500,9 +502,8 @@ as
 			Nombre = @Nombre,
 			Precio = @Precio,
 			ID_Categoria= @ID_Categoria,
-			Estado = @Estado,
-			Fecha_Registro = @Fecha_Registro
-			
+			Estado = @Estado
+
 			where ID_Producto = @ID_Producto
 
 		end
@@ -517,27 +518,28 @@ as
 go
 CREATE PROC SP_ELIMINARPRODUCTO
 (
-	@ID_Proucto int,
+	@ID_Producto int,
 	@Codigo varchar (30),
 	@Nombre varchar(50),
-	@Precio desimal(10,2),
+	@Precio decimal(10,2),
 	@ID_Categoria int,
 	@Estado bit,
-	@Fecha_Registro datetime
+	@Resultado int output,
+	@Mensaje varchar(500) output
 	)
 as 
 	begin
 		set @Resultado = 1
-		if not exists(select * from T_Producto c 
-		inner join T_Categoria p on p.ID_Producto = c.ID_Producto
-		where c.ID_Producto = @ID_Producto)
+		if not exists(select * from T_Producto p 
+		inner join T_VentaDetalle vd on vd.ID_Producto = p.ID_Producto
+		where p.ID_Producto = @ID_Producto)
 		begin
 			delete top (1) from T_Producto where ID_Producto = @ID_Producto
 		end
 		else 
 			begin
 				set @Resultado = 0
-				set @Mensaje = 'No se puede eliminar este producto, esta relacionada con una categoria'
+				set @Mensaje = 'No se puede eliminar este producto, esta relacionado con una venta'
 			end
 	end
 /* -------------------------------- FIN PROCEDIMIENTOS PRODUCTO --------------------------------*/
@@ -578,6 +580,7 @@ as
 go
 CREATE PROC SP_EDITARUSUARIO
 (
+	@ID_Usuario int,
 	@Usuario varchar(50),
 	@Pass varchar(50),
 	@ID_Empleado int,
