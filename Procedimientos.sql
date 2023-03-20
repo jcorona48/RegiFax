@@ -87,7 +87,38 @@ go
 
 /* -------------------------------- PROCEDIMIENTOS DE CLIENTE ------------------------------- */
 
+CREATE PROC SP_REGISTRARCLIENTE(
 
+@Nombre varchar(50), --
+@Apellido varchar(50),--
+@Cedula varchar(13), --
+@Telefono varchar(12), --
+@Sexo varchar(50), --
+@Direccion varchar(250), --
+@Fecha_Nacimiento varchar(50),
+@Estado_Civil varchar(20),
+@Estado bit,
+@Resultado int output,
+@Mensaje varchar(500) output
+
+)
+
+as 
+
+begin
+	set @Resultado = 0
+	if not exists(select * from T_Cliente where Cedula = @Cedula)
+	begin 
+		insert into T_Cliente(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, Estado_Civil, Estado) values 
+		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @Estado_Civil, @Estado)
+		set @Resultado = SCOPE_IDENTITY() 
+	end 
+	else
+		set @Mensaje = 'Ya existe un cliente con esta identificacion'
+end
+
+
+go
 
 
 CREATE PROC SP_EDITARCLIENTE(
