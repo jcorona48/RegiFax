@@ -458,6 +458,7 @@ CREATE PROC SP_REGISTRARPRODUCTO
 	@Codigo varchar (30),
 	@Nombre varchar(50),
 	@Precio decimal(10,2),
+	@Cantidad int,
 	@ID_Categoria int,
 	@Estado bit,	
 	@Resultado int output,
@@ -469,8 +470,8 @@ as
 		set @Resultado = 0
 		if not exists(select * from T_Producto where Nombre = @Nombre)
 		begin
-			insert into T_Produco(Nombre, Precio, ID_Categoria, Estado) values
-			(@Nombre, @Precio, @ID_Categoria, @Estado)
+			insert into T_Producto(Nombre, Precio, Cantidad, ID_Categoria, Estado) values
+			(@Nombre, @Precio, @Cantidad, @ID_Categoria, @Estado)
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
@@ -486,6 +487,7 @@ CREATE PROC SP_EDITARPRODUCTO
 	@ID_Producto int,
 	@Codigo varchar (30),
 	@Nombre varchar(50),
+	@Cantidad int,
 	@Precio decimal(10,2),
 	@ID_Categoria int,
 	@Estado bit,
@@ -500,6 +502,7 @@ as
 			update T_Producto set
 			Codigo = @Codigo,
 			Nombre = @Nombre,
+			Cantidad = @Cantidad,
 			Precio = @Precio,
 			ID_Categoria= @ID_Categoria,
 			Estado = @Estado
@@ -613,3 +616,100 @@ as
 
 
 
+	/* ----------------------------------- PROCEDIMIENTOS VENTA -----------------------------------*/
+
+	-------------------- Creacion de SubTabla para el detalle --------------------
+go
+create type [dbo].[EVenta_Detalle] as table(
+
+[ID_Producto] int null,
+[Precio_Venta] decimal(10,2) null,
+[Cantidad] int null
+)
+
+go
+
+--------- Registrar Venta ---------
+create procedure SP_REGISTRARVenta(
+
+@Codigo_Factura int,
+@ID_Empleado int,
+@ID_Cliente int,
+@Precio_Bruto decimal(10,2),
+@Descuento decimal(10,2),
+@ITBIS decimal(10,2),
+@Precio_Neto decimal(10,2),
+@Venta_Detalle [EVenta_Detalle] readonly,
+@Resultado bit output,
+@Mensaje varchar(500) output
+)
+
+as 
+begin
+
+	begin try
+
+		declare @ID_Venta int = 0
+		set @Resultado = 1
+		set @Mensaje = ''
+
+		begin transaction Registro
+
+		insert into T_Venta 
+		(Codigo_Factura, ID_Empleado, ID_Cliente, Precio_Bruto, Descuento, ITBIS, Precio_Neto) values
+		(@Codigo_Factura,@ID_Empleado,@ID_Cliente,@Precio_Bruto,@Descuento,@ITBIS,@Precio_Neto)
+
+		set @ID_Venta = SCOPE_IDENTITY()
+
+		insert into T_Detalle_Venta(ID_Venta, ID_Producto, Cantidad, Precio_Venta)
+		select @ID_Venta, ID_Producto, Cantidad, Precio_Venta from @Venta_Detalle
+
+		commit transaction Registro
+
+	end try
+	begin catch
+			set @Resultado = 0
+			set @Mensaje = ERROR_MESSAGE()
+			rollback transaction Registro
+	end catch
+
+end
+go
+
+------------------------- ELIMINAR VENTA -----------------
+
+create PROC SP_ELIMINARVenta
+(
+
+	@ID_Venta int,
+	@Resultado bit output,
+	@Mensaje varchar(500) output
+	)
+
+as 
+begin
+
+	begin try
+
+		set @Resultado = 1
+		set @Mensaje = ''
+		begin
+			begin transaction RetornarExistencias
+
+			update p set p.Cantidad = p.Cantidad + vd.Cantidad
+			from T_Producto p
+			inner join T_VentaDetalle vd on vd.ID_Producto = p.ID_Producto
+			where vd.ID_Venta = @ID_Venta
+
+			commit transaction RetornarExistencias
+		
+			update T_Venta set Estado = 0 where ID_Venta = @ID_Venta
+		end
+	end try
+
+			begin catch
+					set @Resultado = 0
+					set @Mensaje = ERROR_MESSAGE()
+					rollback transaction RetornarExistencias
+			end catch
+end

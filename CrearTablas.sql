@@ -71,6 +71,7 @@ create table T_Producto(
 ID_Producto int primary key IDENTITY,
 Codigo varchar(30),
 Nombre varchar(50),
+Cantidad int,
 Precio decimal(10,2),
 ID_Categoria int references T_Categoria(ID_Categoria),
 Estado bit default 1,
@@ -92,7 +93,7 @@ go
 create table T_Ventas(
   
 ID_Venta int primary key IDENTITY,
-Codigo_Facruta int,
+Codigo_Factura int,
 ID_Empleado int references T_Empleado(ID_Empleado),
 ID_Cliente int references T_Cliente(ID_Cliente),
 Precio_Bruto decimal(10,2),
@@ -110,7 +111,7 @@ ID_VentaDetalle int primary key IDENTITY,
 ID_Venta int references T_Ventas(ID_Venta),
 ID_Producto int references T_Producto(ID_Producto),
 Cantidad int,
-Precio_venta decimal(10,2)
+Precio_Venta decimal(10,2)
 );
 -------Final MIlko--------
 
