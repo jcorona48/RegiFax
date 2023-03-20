@@ -178,6 +178,7 @@ CREATE PROC SP_REGISTRAREMPLEADO
 	@Apellido varchar(50),
 	@Cedula varchar(13),
 	@Telefono varchar(12),
+	@sexo varchar(5),
 	@Direccion varchar(250),
 	@Fecha_Nacimiento date,
 	@ID_Departamento int,
@@ -191,8 +192,8 @@ as
 		set @Resultado = 0
 		if not exists(select * from T_Empleado where Nombre = @Nombre)
 		begin
-			insert into T_Emplado(Nombre, Estado) values
-			(@Nombre, @Estado)
+			insert into T_Emplado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado, Fecha_Registro) values 
+		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @ID_Departamento, @Estado_Civil, @Estado, @Fecha_Registro )
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
