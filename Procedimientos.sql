@@ -442,7 +442,7 @@ as
 		else 
 			begin
 				set @Resultado = 0
-				set @Mensaje = 'No se puede eliminar este empleado, esta relacionad@ a una vena'
+				set @Mensaje = 'No se puede eliminar este empleado, esta relacionad@ a una venta'
 			end
 	end
 /* -------------------------------- FIN PROCEDIMIENTOS EMPLEADO --------------------------------*/
