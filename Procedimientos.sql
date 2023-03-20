@@ -542,3 +542,71 @@ as
 	end
 /* -------------------------------- FIN PROCEDIMIENTOS PRODUCTO --------------------------------*/
 
+
+/* ----------------------------------- PROCEDIMIENTOS USUARIO -----------------------------------*/
+
+
+/* -------------- GUARDAR USUARIO --------------*/
+go
+CREATE PROC SP_REGISTRARUSUARIO
+(
+	@Usuario varchar(50),
+	@Pass varchar(50),
+	@ID_Empleado int,
+	@ID_Rol int,
+	@Estado bit,
+	@Resultado int output,
+	@Mensaje varchar(500) output
+	)
+
+as 
+	begin
+		set @Resultado = 0
+		if not exists(select * from T_Usuario where Usuario = @Usuario)
+		begin
+			insert into T_Usuario(Usuario, Pass, ID_Empleado, ID_Rol, Estado) values
+			(@Usuario, @Pass, @ID_Empleado, @ID_Rol, @Estado)
+
+			set @Resultado = SCOPE_IDENTITY() 
+		end
+		else 
+			set @Mensaje = 'Ya existe este  nombre de Usuario'
+	end
+
+--------------- EDITAR USUARIO---------------
+
+go
+CREATE PROC SP_EDITARUSUARIO
+(
+	@Usuario varchar(50),
+	@Pass varchar(50),
+	@ID_Empleado int,
+	@ID_Rol int,
+	@Estado bit,
+	@Resultado int output,
+	@Mensaje varchar(500) output
+	)
+
+as 
+	begin
+		set @Resultado = 1
+		if not exists(select * from T_Usuario where Usuario = @Usuario and ID_Usuario != @ID_Usuario)
+		begin
+			update T_Usuario set
+			Usuario = @Usuario,
+			Pass = @Pass, 
+			ID_Empleado = @ID_Empleado, 
+			ID_Rol = @ID_Rol,
+			Estado = @Estado 		
+			where ID_Usuario = @ID_Usuario
+
+		end
+		else 
+			begin
+				set @Resultado = 0
+				set @Mensaje = 'No se permite este nombre de usuario o ya esta en uso'
+			end
+	end
+
+
+
