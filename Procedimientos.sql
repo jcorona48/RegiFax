@@ -344,7 +344,7 @@ CREATE PROC SP_REGISTRAREMPLEADO
 	@Apellido varchar(50),
 	@Cedula varchar(13),
 	@Telefono varchar(12),
-	@sexo varchar(5),
+	@Sexo varchar(50),
 	@Direccion varchar(250),
 	@Fecha_Nacimiento date,
 	@ID_Departamento int,
@@ -359,7 +359,7 @@ as
 		set @Resultado = 0
 		if not exists(select * from T_Empleado where Cedula = @Cedula)
 		begin
-			insert into T_Emplado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado) values 
+			insert into T_Empleado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado) values 
 		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @ID_Departamento, @Estado_Civil, @Estado )
 
 			set @Resultado = SCOPE_IDENTITY() 
@@ -429,7 +429,6 @@ CREATE PROC SP_ELIMINAREMPLEADO
 	@Resultado bit output,
 	@Mensaje varchar(500) output
 	)
-
 as 
 	begin
 		set @Resultado = 1
