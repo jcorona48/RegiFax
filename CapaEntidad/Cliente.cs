@@ -16,12 +16,11 @@ namespace CapaEntidad
         public string Telefono { get; set;}
         public string Direccion { get; set;}
         public string Fecha_Nacimiento { get; set;}
-        public int ID_Departamento { get; set;}
         public string Estado_Civil { get; set;}
         public bool Estado { get; set;}
-        public DateTime Fecha_Registro { get; set;}
+        public string Fecha_Registro { get; set;}
 
-        public Cliente(int iD_Cliente, string nombre, string apellido, string cedula, string sexo, string telefono, string direccion, string fecha_Nacimiento, int iD_Departamento, string estado_Civil, bool estado, DateTime fecha_Registro)
+        public Cliente(int iD_Cliente, string nombre, string apellido, string cedula, string sexo, string telefono, string direccion, string fecha_Nacimiento,  string estado_Civil, bool estado, string fecha_Registro)
         {
             ID_Cliente = iD_Cliente;
             Nombre = nombre;
@@ -31,13 +30,12 @@ namespace CapaEntidad
             Telefono = telefono;
             Direccion = direccion;
             Fecha_Nacimiento = fecha_Nacimiento;
-            ID_Departamento = iD_Departamento;
             Estado_Civil = estado_Civil;
             Estado = estado;
             Fecha_Registro = fecha_Registro;
         }
 
-        Cliente()
+        public Cliente()
         {
 
         }

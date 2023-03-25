@@ -338,13 +338,14 @@ as
 
 /* -------------- GUARDAR EMPLEADO --------------*/
 go
+
 CREATE PROC SP_REGISTRAREMPLEADO
 (
 	@Nombre varchar(50),
 	@Apellido varchar(50),
 	@Cedula varchar(13),
-	@Telefono varchar(12),
 	@Sexo varchar(50),
+	@Telefono varchar(12),
 	@Direccion varchar(250),
 	@Fecha_Nacimiento date,
 	@ID_Departamento int,

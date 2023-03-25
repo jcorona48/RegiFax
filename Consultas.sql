@@ -1,4 +1,6 @@
-﻿create PROC SP_ReporteVentas(
+﻿
+/* ------------------------------- Reportes de Ventas --------------------------------- */
+create PROC SP_ReporteVentas(
 @FechaInicio varchar(10),
 @FechaFin varchar(10),
 @ID_Empleado int
@@ -70,3 +72,86 @@ begin
 	where CONVERT(date,V.Fecha_Registro) between @FechaInicio and @FechaFin
 	and e.ID_Empleado = iif(@ID_Empleado=0,e.ID_Empleado,@ID_Empleado)
 end
+
+/* ------------------------------- Fin Reportes de Ventas --------------------------------- */
+
+go
+
+/* ------------------------------- Reportes de Cliente --------------------------------- */
+
+create PROC SP_ConsultarCliente(
+@valor varchar(100)
+)
+as 
+	SET NOCOUNT ON;
+	if((@valor='0'))
+		begin
+			SELECT C.ID_Cliente, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+			C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+			FROM T_Cliente AS C
+		end
+	Else
+		begin
+			IF ((ISNUMERIC(@valor)=1))
+				 BEGIN
+					SELECT C.ID_Cliente, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+					 C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					FROM T_Cliente AS C
+					WHERE (C.ID_Cliente = @valor) ORDER BY C.ID_Cliente
+				 END
+			ELSE
+				BEGIN
+					SELECT C.ID_Cliente, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+						C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					FROM T_Cliente AS C
+					WHERE (C.Nombre Like '%'+@valor + '%') OR (C.Nombre Like '%'+@valor + '%') OR
+					 (C.Apellido Like '%'+@valor + '%') OR (C.Cedula Like '%'+@valor + '%') OR
+					 (C.Telefono Like '%'+@valor + '%') OR (C.Sexo Like '%'+@valor + '%')
+					 OR (C.Direccion Like '%'+@valor + '%') OR (C.Fecha_Nacimiento Like '%'+@valor + '%')
+					 OR (C.Estado_Civil Like '%'+@valor + '%') OR (C.Estado Like '%'+@valor + '%')
+					ORDER BY C.ID_Cliente
+				END
+		end
+
+
+/* ------------------------------- Reportes de Cliente FIN --------------------------------- */
+
+go
+/* ------------------------------- Reportes de Empleado --------------------------------- */
+
+create PROC SP_ConsultarEmpleado(
+@valor varchar(100)
+)
+as 
+	SET NOCOUNT ON;
+	if((@valor='0'))
+		begin
+			SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+			C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+			FROM T_Empleado AS C
+		end
+	Else
+		begin
+			IF ((ISNUMERIC(@valor)=1))
+				 BEGIN
+					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+					 C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					FROM T_Empleado AS C
+					WHERE (C.ID_Empleado = @valor) ORDER BY C.ID_Empleado
+				 END
+			ELSE
+				BEGIN
+					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
+						C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					FROM T_Empleado AS C
+					WHERE (C.Nombre Like '%'+@valor + '%') OR (C.Nombre Like '%'+@valor + '%') OR
+					 (C.Apellido Like '%'+@valor + '%') OR (C.Cedula Like '%'+@valor + '%') OR
+					 (C.Telefono Like '%'+@valor + '%') OR (C.Sexo Like '%'+@valor + '%')
+					 OR (C.Direccion Like '%'+@valor + '%') OR (C.Fecha_Nacimiento Like '%'+@valor + '%')
+					 OR (C.Estado_Civil Like '%'+@valor + '%') OR (C.Estado Like '%'+@valor + '%')
+					ORDER BY C.ID_Empleado
+				END
+		end
+
+
+/* ------------------------------- Reportes de Empleado  FIN--------------------------------- */

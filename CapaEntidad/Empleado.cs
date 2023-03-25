@@ -16,12 +16,12 @@ namespace CapaEntidad
         public string Telefono { get; set;}
         public string Direccion { get; set;}
         public string Fecha_Nacimiento { get; set;}
-        public int ID_Departamento { get; set;}
+        public Departamento oDepartamento { get; set;} // A las claves foraneas creale este campo. Aqui deberia ir ID_Departamento pero mejor el objeto para asi poder guardar mas informacion
         public string Estado_Civil { get; set;}
         public bool Estado { get; set;}
-        public DateTime Fecha_Registro { get; set;}
+        public string Fecha_Registro { get; set;}
 
-        public Empleado(int iD_Empleado, string nombre, string apellido, string cedula, string telefono,string sexo, string direccion, string fecha_Nacimiento, int iD_Departamento, string estado_Civil, bool estado, DateTime fecha_Registro)
+        public Empleado(int iD_Empleado, string nombre, string apellido, string cedula, string telefono,string sexo, string direccion, string fecha_Nacimiento, Departamento oDepartamento, string estado_Civil, bool estado, string fecha_Registro)
         {
             ID_Empleado = iD_Empleado;
             Nombre = nombre;
@@ -31,13 +31,13 @@ namespace CapaEntidad
             Sexo = sexo;
             Direccion = direccion;
             Fecha_Nacimiento = fecha_Nacimiento;
-            ID_Departamento = iD_Departamento;
+            oDepartamento = oDepartamento;
             Estado_Civil = estado_Civil;
             Estado = estado;
             Fecha_Registro = fecha_Registro;
         }
 
-        Empleado()
+       public Empleado()
         {
 
         }
