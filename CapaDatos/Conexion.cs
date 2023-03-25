@@ -13,7 +13,7 @@ namespace CapaDatos
 {
     public class Conexion
     {
-        public static string conexion = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Programas en C#\RegiFax\CapaDatos\DB_RegiFax.mdf"";Integrated Security=True";
+        public static string conexion = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\RegiFax\CapaDatos\DB_RegiFax.mdf;Integrated Security=True";
         public SqlConnection dbconexion = new SqlConnection(conexion);
     }
 }

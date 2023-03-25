@@ -7,12 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace CapaDatos
 {
-    public class CD_Cliente
+    public class CD_Venta
     {
-        public bool Insertar(Cliente objCliente, out string Mensaje)
+        public bool Insertar(VentaCabecera objVentaCabecera, DataTable Venta_Detalle,  out string Mensaje)
         {
             bool respuesta = false;
             Mensaje = string.Empty;
@@ -24,13 +23,19 @@ namespace CapaDatos
                 //asignamos a sqlCon la conexión con las base de datos a traves de la clase que creamos
                 sqlCon.ConnectionString = Conexion.conexion;
                 //Escribo el nombre del procedimiento almacenado que utilizaré, en este caso SuplidorInsertar
-                SqlCommand micomando = new SqlCommand("SP_REGISTRARCLIENTE", sqlCon);
+                SqlCommand micomando = new SqlCommand("SP_REGISTRARVenta", sqlCon);
                 sqlCon.Open(); //Abro la conexión
                                //indico que se ejecutara un procedimiento almacenado
                 micomando.CommandType = CommandType.StoredProcedure;
-                micomando.Parameters.AddWithValue("@Nombre", objCliente.Nombre);           
-                micomando.Parameters.AddWithValue("@Fecha_Nacimiento", objCliente.Fecha_Nacimiento);
-                micomando.Parameters.AddWithValue("@Estado", objCliente.Estado);
+                micomando.Parameters.AddWithValue("@@Codigo_Factura", objVentaCabecera.Codigo_Factura);
+                micomando.Parameters.AddWithValue("@ID_Empleado", objVentaCabecera.oEmpleado.ID_Empleado);
+                micomando.Parameters.AddWithValue("@Cedula", objVentaCabecera.oCliente.ID_Cliente);
+                micomando.Parameters.AddWithValue("@Precio_Bruto", objVentaCabecera.Precio_Bruto);
+                micomando.Parameters.AddWithValue("@Descuento", objVentaCabecera.Descuento);
+                micomando.Parameters.AddWithValue("@ITBIS", objVentaCabecera.ITBIS);
+                micomando.Parameters.AddWithValue("@Precio_Neto", objVentaCabecera.Precio_Neto);
+                micomando.Parameters.AddWithValue("@Venta_Detalle", Venta_Detalle);
+
                 micomando.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                 micomando.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                 /*Ejecuto la instrucción. Si se devuelve el valor 1 significa que todo funcionó correctamente de lo
@@ -45,7 +50,8 @@ namespace CapaDatos
 
                 Mensaje = ex.Message;
             }
-            finally{ //Luego de realizar el proceso de forma correcta o no
+            finally
+            { //Luego de realizar el proceso de forma correcta o no
 
                 if (sqlCon.State == ConnectionState.Open)
                     sqlCon.Close();
@@ -54,7 +60,7 @@ namespace CapaDatos
             return respuesta;
         }
 
-        public bool Actualizar(Cliente objCliente, out string Mensaje)
+        public bool Actualizar(VentaCabecera objVentaCabecera, out string Mensaje)
         {
             bool respuesta = false;
             Mensaje = string.Empty;
@@ -66,19 +72,11 @@ namespace CapaDatos
                 //asignamos a sqlCon la conexión con las base de datos a traves de la clase que creamos
                 sqlCon.ConnectionString = Conexion.conexion;
                 //Escribo el nombre del procedimiento almacenado que utilizaré, en este caso SuplidorInsertar
-                SqlCommand micomando = new SqlCommand("SP_EDITARCLIENTE", sqlCon);
+                SqlCommand micomando = new SqlCommand("SP_ELIMINARVenta", sqlCon);
                 sqlCon.Open(); //Abro la conexión
                                //indico que se ejecutara un procedimiento almacenado
                 micomando.CommandType = CommandType.StoredProcedure;
-                micomando.Parameters.AddWithValue("@ID_Cliente", objCliente.ID_Cliente);
-                micomando.Parameters.AddWithValue("@Nombre", objCliente.Nombre);
-                micomando.Parameters.AddWithValue("@Apellido", objCliente.Apellido);
-                micomando.Parameters.AddWithValue("@Cedula", objCliente.Cedula);
-                micomando.Parameters.AddWithValue("@Telefono", objCliente.Telefono);
-                micomando.Parameters.AddWithValue("@Sexo", objCliente.Direccion);
-                micomando.Parameters.AddWithValue("@Fecha_Nacimiento", objCliente.Fecha_Nacimiento);
-                micomando.Parameters.AddWithValue("@Estado_Civil", objCliente.Estado_Civil);
-                micomando.Parameters.AddWithValue("@Estado", objCliente.Estado);
+                micomando.Parameters.AddWithValue("@ID_Venta", objVentaCabecera.ID_Venta);
                 micomando.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                 micomando.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                 /*Ejecuto la instrucción. Si se devuelve el valor 1 significa que todo funcionó correctamente de lo
@@ -104,36 +102,34 @@ namespace CapaDatos
         }
 
         //Método para consultar datos filtrados de la tabla. Se recibe el valor del parámetro
-        public List<Cliente>  ClienteConsultar(string miparametro)
+        public List<VentaCabecera> VentaCabeceraConsultar(string FechaInicio, string FechaFin, int ID_Empleado)
         {
-            List<Cliente> Lista = new List<Cliente>(); //Se Crea DataTable que tomará los datos de los Suplidores
+            List<VentaCabecera> Lista = new List<VentaCabecera>(); //Se Crea DataTable que tomará los datos de los Suplidores
             SqlDataReader leerDatos; //Creamos el DataReader
             try
             {
                 SqlCommand sqlCmd = new SqlCommand(); //Establecer el comando
                 sqlCmd.Connection = new Conexion().dbconexion; //Conexión que va a usar el comando
                 sqlCmd.Connection.Open(); //Se abre la conexión
-                sqlCmd.CommandText = "SP_ConsultarCliente"; //Nombre del Proc. Almacenado a usar
+                sqlCmd.CommandText = "SP_ReporteVentas"; //Nombre del Proc. Almacenado a usar
                 sqlCmd.CommandType = CommandType.StoredProcedure; //Se trata de un proc. almacenado
-                sqlCmd.Parameters.AddWithValue("@valor", miparametro); //Se pasa el valor a buscar
-                using (leerDatos= sqlCmd.ExecuteReader()) //Llenamos el SqlDataReader con los datos resultantes
+                sqlCmd.Parameters.AddWithValue("@FechaInicio", FechaInicio); //Se pasa el valor a buscar
+                sqlCmd.Parameters.AddWithValue("@FechaFin", FechaFin); //Se pasa el valor a buscar
+                sqlCmd.Parameters.AddWithValue("@@ID_Empleado", ID_Empleado); //Se pasa el valor a buscar
+                using (leerDatos = sqlCmd.ExecuteReader()) //Llenamos el SqlDataReader con los datos resultantes
                 {
-                    while(leerDatos.Read())
+                    while (leerDatos.Read())
                     {
-                        Lista.Add(new Cliente //Se cargan los registros devueltos a la lista
+                        Lista.Add(new VentaCabecera //Se cargan los registros devueltos a la lista
                         {
-                            ID_Cliente = Convert.ToInt32(leerDatos["ID_Cliente"]),
-                            Nombre = leerDatos["Nombre"].ToString(),
-                            Apellido = leerDatos["Apellido"].ToString(),
-                            Cedula = leerDatos["Cedula"].ToString(),
-                            Sexo = leerDatos["Sexo"].ToString(),
-                            Telefono = leerDatos["Telefono"].ToString(),
-                            Direccion = leerDatos["Direccion"].ToString(),
-                            Fecha_Nacimiento = leerDatos["Fecha_Nacimiento"].ToString(),
-                            Estado_Civil = leerDatos["Estado_Civil"].ToString(),
-                            Estado = Convert.ToBoolean(leerDatos["Estado"]),
-                            Fecha_Registro = leerDatos["Fecha_Registro"].ToString()
-
+                            ID_Venta = Convert.ToInt32(leerDatos["ID_VentaCabecera"]),
+                            Fecha_Registro = leerDatos["Fecha_Registro"].ToString(),
+                            Codigo_Factura = Convert.ToInt32(leerDatos["Codigo_Factura"]),
+                            oEmpleado = new Empleado() { Nombre = leerDatos["NombreEmp"].ToString(), Apellido = leerDatos["ApellidoEmp"].ToString() },
+                            oCliente = new Cliente() { Nombre = leerDatos["NombreCli"].ToString(), Apellido = leerDatos["ApellidoCli"].ToString(), Cedula = leerDatos["CedulaCli"].ToString() },
+                            Precio_Bruto = Convert.ToDecimal(leerDatos["Precio_Bruto"]),
+                            ITBIS = Convert.ToDecimal(leerDatos["ITBIS"]),
+                            Precio_Neto = Convert.ToDecimal(leerDatos["Precio_Neto"]),
 
                         });
                     }
@@ -142,7 +138,7 @@ namespace CapaDatos
             }
             catch (Exception ex)
             {
-                Lista = new List<Cliente>(); //Si ocurre algun error se envia una lista vacia
+                Lista = new List<VentaCabecera>(); //Si ocurre algun error se envia una lista vacia
             }
             return Lista; ////Se retorna la lista segun lo ocurrido arriba
         } //Fin del método MostrarConFiltro

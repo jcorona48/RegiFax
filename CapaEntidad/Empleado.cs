@@ -21,25 +21,6 @@ namespace CapaEntidad
         public bool Estado { get; set;}
         public string Fecha_Registro { get; set;}
 
-        public Empleado(int iD_Empleado, string nombre, string apellido, string cedula, string telefono,string sexo, string direccion, string fecha_Nacimiento, Departamento oDepartamento, string estado_Civil, bool estado, string fecha_Registro)
-        {
-            ID_Empleado = iD_Empleado;
-            Nombre = nombre;
-            Apellido = apellido;
-            Cedula = cedula;
-            Telefono = telefono;
-            Sexo = sexo;
-            Direccion = direccion;
-            Fecha_Nacimiento = fecha_Nacimiento;
-            oDepartamento = oDepartamento;
-            Estado_Civil = estado_Civil;
-            Estado = estado;
-            Fecha_Registro = fecha_Registro;
-        }
 
-       public Empleado()
-        {
-
-        }
     }
 }
