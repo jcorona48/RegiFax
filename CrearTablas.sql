@@ -1,4 +1,8 @@
 ﻿
+create database DB_RegiFax
+
+
+use DB_RegiFax
 ----- Inicio Wander ------
 create table T_Rol(
 

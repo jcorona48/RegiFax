@@ -6,7 +6,7 @@ go
 CREATE PROC SP_REGISTRARCATEGORIA
 (
 	@Nombre varchar(50),
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -32,7 +32,7 @@ CREATE PROC SP_EDITARCATEGORIA
 (
 	@ID_Categoria int,
 	@Nombre varchar(50),
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado bit output,
 	@Mensaje varchar(500) output
 	)
@@ -95,9 +95,9 @@ CREATE PROC SP_REGISTRARCLIENTE(
 @Telefono varchar(12), --
 @Sexo varchar(50), --
 @Direccion varchar(250), --
-@Fecha_Nacimiento varchar(50),
+@Fecha_Nacimiento varchar(15),
 @Estado_Civil varchar(20),
-@Estado bit,
+@Estado bit = 1,
 @Resultado int output,
 @Mensaje varchar(500) output
 
@@ -106,11 +106,12 @@ CREATE PROC SP_REGISTRARCLIENTE(
 as 
 
 begin
+	set dateformat dmy;
 	set @Resultado = 0
 	if not exists(select * from T_Cliente where Cedula = @Cedula)
 	begin 
 		insert into T_Cliente(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, Estado_Civil, Estado) values 
-		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @Estado_Civil, @Estado)
+		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion,CONVERT(date, @Fecha_Nacimiento), @Estado_Civil, @Estado)
 		set @Resultado = SCOPE_IDENTITY() 
 	end 
 	else
@@ -121,7 +122,7 @@ end
 go
 
 
-CREATE PROC SP_EDITARCLIENTE(
+create PROC SP_EDITARCLIENTE(
 @ID_Cliente int,
 
 @Nombre varchar(50), --
@@ -130,7 +131,7 @@ CREATE PROC SP_EDITARCLIENTE(
 @Telefono varchar(12), --
 @Sexo varchar(50), --
 @Direccion varchar(250), --
-@Fecha_Nacimiento varchar(50),
+@Fecha_Nacimiento varchar(20),
 @Estado_Civil varchar(20),
 @Estado bit,
 @Resultado bit output,
@@ -141,6 +142,7 @@ CREATE PROC SP_EDITARCLIENTE(
 as 
 
 begin
+	set dateformat dmy;
 	set @Resultado = 1
 	set @Mensaje = ''
 	if not exists(select * from T_Cliente where Cedula = @Cedula and ID_Cliente != @ID_Cliente)
@@ -174,7 +176,7 @@ go
 CREATE PROC SP_REGISTRARROL
 (
 	@Nombre varchar(50),
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -257,7 +259,7 @@ CREATE PROC SP_REGISTRARDEPARTAMENTO
 (
 	@Nombre varchar(50),
 	@Descripcion varchar (250),
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -339,7 +341,7 @@ as
 /* -------------- GUARDAR EMPLEADO --------------*/
 go
 
-CREATE PROC SP_REGISTRAREMPLEADO
+create PROC SP_REGISTRAREMPLEADO
 (
 	@Nombre varchar(50),
 	@Apellido varchar(50),
@@ -347,21 +349,22 @@ CREATE PROC SP_REGISTRAREMPLEADO
 	@Sexo varchar(50),
 	@Telefono varchar(12),
 	@Direccion varchar(250),
-	@Fecha_Nacimiento date,
+	@Fecha_Nacimiento varchar(15),
 	@ID_Departamento int,
 	@Estado_Civil varchar(20),
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
 
 as 
 	begin
+		set dateformat dmy;
 		set @Resultado = 0
 		if not exists(select * from T_Empleado where Cedula = @Cedula)
 		begin
 			insert into T_Empleado(Nombre, Apellido, Cedula, Telefono, Sexo, Direccion, Fecha_Nacimiento, ID_Departamento, Estado_Civil, Estado) values 
-		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, @Fecha_Nacimiento, @ID_Departamento, @Estado_Civil, @Estado )
+		(@Nombre, @Apellido, @Cedula, @Telefono, @Sexo, @Direccion, CONVERT(date,@Fecha_Nacimiento), @ID_Departamento, @Estado_Civil, @Estado )
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
@@ -372,7 +375,7 @@ as
 ---------------EDITAR EMPLEADO ---------------
 
 go
-CREATE PROC SP_EDITAREMPLEADO
+create PROC SP_EDITAREMPLEADO
 (
 	@ID_Empleado int,
 	@Nombre varchar(50),
@@ -380,7 +383,7 @@ CREATE PROC SP_EDITAREMPLEADO
 	@Cedula varchar(13),
 	@Telefono varchar(12),
 	@Direccion varchar(250),
-	@Fecha_Nacimiento date,
+	@Fecha_Nacimiento varchar(20),
 	@ID_Departamento int,
 	@Estado_Civil varchar(20),
 	@Estado bit,
@@ -389,6 +392,7 @@ CREATE PROC SP_EDITAREMPLEADO
 	)
 as 
 	begin
+		set dateformat dmy;
 		set @Resultado = 1
 		if not exists(select * from T_Empleado where Cedula = @Cedula and ID_Empleado != @ID_Empleado)
 		begin
@@ -398,7 +402,7 @@ as
 			Cedula = @Cedula,
 			Telefono = @Telefono,
 			Direccion = @Direccion,
-			Fecha_Nacimiento = @Fecha_Nacimiento,
+			Fecha_Nacimiento = CONVERT(date, @Fecha_Nacimiento),
 			ID_Departamento = @ID_Departamento,
 			Estado_Civil = @Estado_Civil,
 			Estado = @Estado
@@ -418,15 +422,6 @@ go
 CREATE PROC SP_ELIMINAREMPLEADO
 (
 	@ID_Empleado int,
-	@Nombre varchar(50),
-	@Apellido varchar(50),
-	@Cedula varchar(13),
-	@Telefono varchar(12),
-	@Direccion varchar(250),
-	@Fecha_Nacimiento date,
-	@ID_Departamento int,
-	@Estado_Civil varchar(20),
-	@Estado bit,
 	@Resultado bit output,
 	@Mensaje varchar(500) output
 	)
@@ -460,7 +455,7 @@ CREATE PROC SP_REGISTRARPRODUCTO
 	@Precio decimal(10,2),
 	@Cantidad int,
 	@ID_Categoria int,
-	@Estado bit,	
+	@Estado bit = 1,	
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -470,8 +465,8 @@ as
 		set @Resultado = 0
 		if not exists(select * from T_Producto where Nombre = @Nombre)
 		begin
-			insert into T_Producto(Nombre, Precio, Cantidad, ID_Categoria, Estado) values
-			(@Nombre, @Precio, @Cantidad, @ID_Categoria, @Estado)
+			insert into T_Producto(Codigo,Nombre, Precio, Cantidad, ID_Categoria, Estado) values
+			(@Codigo,@Nombre, @Precio, @Cantidad, @ID_Categoria, @Estado)
 
 			set @Resultado = SCOPE_IDENTITY() 
 		end
@@ -559,7 +554,7 @@ CREATE PROC SP_REGISTRARUSUARIO
 	@Pass varchar(50),
 	@ID_Empleado int,
 	@ID_Rol int,
-	@Estado bit,
+	@Estado bit = 1,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -663,6 +658,11 @@ begin
 
 		insert into T_VentaDetalle(ID_Venta, ID_Producto, Cantidad, Precio_Venta)
 		select @ID_Venta, ID_Producto, Cantidad, Precio_Venta from @Venta_Detalle
+
+		update p set p.Cantidad = p.Cantidad - vd.Cantidad
+			from T_Producto p
+			inner join T_VentaDetalle vd on vd.ID_Producto = p.ID_Producto
+			where vd.ID_Venta = @ID_Venta
 
 		commit transaction Registro
 

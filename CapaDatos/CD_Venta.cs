@@ -142,5 +142,44 @@ namespace CapaDatos
             }
             return Lista; ////Se retorna la lista segun lo ocurrido arriba
         } //Fin del método MostrarConFiltro
+
+        public List<VentaDetalle> ListarTopVentas(string FechaInicio, string FechaFin, int ID_Empleado)
+        {
+            List<VentaDetalle> Lista = new List<VentaDetalle>(); //Se Crea DataTable que tomará los datos de los Suplidores
+            SqlDataReader leerDatos; //Creamos el DataReader
+            try
+            {
+                SqlCommand sqlCmd = new SqlCommand(); //Establecer el comando
+                sqlCmd.Connection = new Conexion().dbconexion; //Conexión que va a usar el comando
+                sqlCmd.Connection.Open(); //Se abre la conexión
+                sqlCmd.CommandText = "SP_ReporteVentasTopProducto"; //Nombre del Proc. Almacenado a usar
+                sqlCmd.CommandType = CommandType.StoredProcedure; //Se trata de un proc. almacenado
+                sqlCmd.Parameters.AddWithValue("@FechaInicio", FechaInicio); //Se pasa el valor a buscar
+                sqlCmd.Parameters.AddWithValue("@FechaFin", FechaFin); //Se pasa el valor a buscar
+                sqlCmd.Parameters.AddWithValue("@@ID_Empleado", ID_Empleado); //Se pasa el valor a buscar
+                using (leerDatos = sqlCmd.ExecuteReader()) //Llenamos el SqlDataReader con los datos resultantes
+                {
+                    while (leerDatos.Read())
+                    {
+                        Lista.Add(new VentaDetalle //Se cargan los registros devueltos a la lista
+                        {
+                            oProducto = new Producto() { 
+                                Codigo = leerDatos["Codigo"].ToString(),
+                                Nombre = leerDatos["Nombre"].ToString(), 
+                                Cantidad = Convert.ToInt32(leerDatos["Total_Vendido"]),
+                                oCategoria =  new Categoria() {Nombre = leerDatos["Categoria"].ToString() }
+                            }
+
+                        });
+                    }
+                }
+                sqlCmd.Connection.Close(); //Se cierra la conexión
+            }
+            catch (Exception ex)
+            {
+                Lista = new List<VentaDetalle>(); //Si ocurre algun error se envia una lista vacia
+            }
+            return Lista; ////Se retorna la lista segun lo ocurrido arriba
+        } //Fin del método MostrarConFiltro
     }
 }
