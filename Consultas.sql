@@ -333,5 +333,29 @@ as
 		end
 /* ------------------------------- Reportes de Departamento  FIN--------------------------------- */
 
+go
 
-
+create PROC SP_InicioSesion(
+@user varchar(50),
+@pass varchar(50),
+@Resultado int output,
+@Mensaje varchar(500) output
+)
+as 
+	
+	if not exists (select * from T_Usuario where Usuario = @user and Pass = @pass)
+		begin
+			set @Resultado = 0
+			if not exists (select * from T_Usuario where Usuario = @user)
+			begin
+				set @Mensaje = 'Este Usuario no se encuentra en la Base de Datos.'
+			end
+			else
+				begin
+					if not exists (select * from T_Usuario where Pass = @pass)
+						begin
+							set @Mensaje = 'La contraseña es incorrecta.'
+						end
+				end
+		end
+	set @Resultado = (select ID_Usuario from T_Usuario where Usuario = @user and Pass = @pass)
