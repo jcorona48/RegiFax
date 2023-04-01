@@ -38,4 +38,3 @@ set dateformat dmy;
 	and e.ID_Empleado = iif(@ID_Empleado=0,e.ID_Empleado,@ID_Empleado)
 	group by c.Cedula, c.Nombre, c.Apellido
 	*/
-

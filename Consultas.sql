@@ -75,6 +75,7 @@ as
 			SELECT C.ID_Cliente, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
 			C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
 			FROM T_Cliente AS C
+			ORDER BY C.ID_Cliente
 		end
 	Else
 		begin
@@ -104,7 +105,6 @@ as
 
 go
 /* ------------------------------- Reportes de Empleado --------------------------------- */
-
 create PROC SP_ConsultarEmpleado(
 @valor varchar(100)
 )
@@ -112,33 +112,35 @@ as
 	SET NOCOUNT ON;
 	if((@valor='0'))
 		begin
-			SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
-			C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+			SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion, C.ID_Departamento,
+			D.Nombre as Departamento, C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
 			FROM T_Empleado AS C
+			inner join T_Departamento D on D.ID_Departamento = C.ID_Departamento
+			ORDER BY C.ID_Empleado
 		end
 	Else
 		begin
 			IF ((ISNUMERIC(@valor)=1))
 				 BEGIN
-					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
-					 C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
-					FROM T_Empleado AS C
+					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion, C.ID_Departamento,
+					D.Nombre as Departamento, C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					FROM T_Empleado AS C 
+					inner join T_Departamento D on D.ID_Departamento = C.ID_Departamento
 					WHERE (C.ID_Empleado = @valor) ORDER BY C.ID_Empleado
 				 END
 			ELSE
 				BEGIN
-					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion,
-						C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
+					SELECT C.ID_Empleado, C.Nombre, C.Apellido, C.Cedula, C.Telefono, C.Sexo, C.Direccion, C.ID_Departamento,
+					D.Nombre as Departamento, C.Fecha_Nacimiento, C.Estado_Civil, C.Estado 
 					FROM T_Empleado AS C
+					inner join T_Departamento D on D.ID_Departamento = C.ID_Departamento
 					WHERE (C.Nombre Like '%'+@valor + '%') OR (C.Apellido Like '%'+@valor + '%') OR (C.Cedula Like '%'+@valor + '%') OR
-					 (C.Telefono Like '%'+@valor + '%') OR (C.Sexo Like '%'+@valor + '%')
+					 (C.Telefono Like '%'+@valor + '%') OR (C.Sexo Like '%'+@valor + '%') OR (D.Nombre Like '%'+@valor + '%') 
 					 OR (C.Direccion Like '%'+@valor + '%') OR (C.Fecha_Nacimiento Like '%'+@valor + '%')
 					 OR (C.Estado_Civil Like '%'+@valor + '%') OR (C.Estado Like '%'+@valor + '%')
 					ORDER BY C.ID_Empleado
 				END
 		end
-
-
 /* ------------------------------- Reportes de Empleado  FIN--------------------------------- */
 
 
@@ -152,33 +154,36 @@ as
 	SET NOCOUNT ON;
 	if((@valor='0'))
 		begin
-			SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, C.Estado, C.Fecha_Registro
+			SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, cat.Nombre as Categoria, C.Estado, C.Fecha_Registro
 			FROM T_Producto AS C
+			inner join T_Categoria cat on cat.ID_Categoria = c.ID_Categoria
+			ORDER BY C.ID_Producto
 		end
 	Else
 		begin
 			IF ((ISNUMERIC(@valor)=1))
 				 BEGIN
-					SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, C.Estado, C.Fecha_Registro
+					SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, cat.Nombre as Categoria, C.Estado, C.Fecha_Registro
 					FROM T_Producto AS C
+					inner join T_Categoria cat on cat.ID_Categoria = c.ID_Categoria
 					WHERE (C.ID_Producto = @valor) ORDER BY C.ID_Producto
 				 END
 			ELSE
 				BEGIN
-					SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, C.Estado, C.Fecha_Registro 
+					SELECT C.ID_Producto, C.Codigo, C.Nombre, C.Cantidad, C.Precio, C.ID_Categoria, cat.Nombre as Categoria, C.Estado, C.Fecha_Registro 
 					FROM T_Producto AS C
+					inner join T_Categoria cat on cat.ID_Categoria = c.ID_Categoria
 					WHERE (C.Codigo Like '%'+@valor + '%') OR
 					(C.Nombre Like '%'+@valor + '%') OR
 					 (C.Cantidad Like '%'+@valor + '%') OR 
 					 (C.Precio Like '%'+@valor + '%') OR 
+					 (cat.Nombre Like '%'+@valor + '%') OR
 					 (C.ID_Categoria Like '%'+@valor + '%') OR
 					(C.Estado Like '%'+@valor + '%') OR
 					 (C.Fecha_Registro Like '%'+@valor + '%') 
 					ORDER BY C.ID_Producto
 				END
-		end
-
-
+		end  
 /* ------------------------------- Reportes de Producto  FIN--------------------------------- */
 
 go
@@ -190,10 +195,12 @@ create PROC SP_ConsultarCategoria(
 )
 as 
 	SET NOCOUNT ON;
+	set dateformat dmy;
 	if((@valor='0'))
 		begin
 			SELECT C.ID_Categoria, C.Nombre, C.Estado, C.Fecha_Registro
 			FROM T_Categoria AS C
+			ORDER BY C.ID_Categoria
 		end
 	Else
 		begin
@@ -207,12 +214,11 @@ as
 				BEGIN
 					SELECT C.ID_Categoria, C.Nombre, C.Estado, C.Fecha_Registro
 					FROM T_Categoria AS C
-					WHERE (C.Nombre Like '%'+@valor + '%') OR (C.Estado Like '%'+@valor + '%') OR (C.Fecha_Registro Like '%'+@valor + '%') OR
+					WHERE (C.Nombre Like '%'+@valor + '%') OR (C.Estado Like '%'+@valor + '%') OR (CONVERT(date, C.Fecha_Registro) Like '%'+ CONVERT(date, @valor) + '%') OR
 					(C.Estado Like '%'+@valor + '%')
 					ORDER BY C.ID_Categoria
 				END
 		end
-
 /* ------------------------------- Reportes de Categoria FIN --------------------------------- */
 go
 /* ------------------------------- Reportes de Rol --------------------------------- */
@@ -226,6 +232,7 @@ as
 		begin
 			SELECT C.ID_Rol, C.Nombre, C.Estado, C.Fecha_Registro
 			FROM T_Rol AS C
+			order by c.ID_Rol
 		end
 	Else
 		begin
@@ -252,7 +259,7 @@ as
 		go
 		/* ------------------------------- Reportes de Usuario --------------------------------- */
 
-		alter PROC SP_ConsultarUsuario(
+		create PROC SP_ConsultarUsuario(
 		@valor varchar(100)
 		)
 		as 
@@ -263,6 +270,7 @@ as
 					FROM T_Usuario AS u
 					inner join T_Empleado e on e.ID_Empleado = u.ID_Empleado
 					inner join T_Rol r on r.ID_Rol = u.ID_Rol
+					ORDER BY u.ID_Usuario
 				end
 			Else
 				begin
@@ -294,7 +302,6 @@ as
 
 go
 /* ------------------------------- Reportes de Departamento --------------------------------- */
-
 create PROC SP_ConsultarDepartamento(
 @valor varchar(100)
 )
@@ -302,21 +309,21 @@ as
 	SET NOCOUNT ON;
 	if((@valor='0'))
 		begin
-			SELECT C.ID_Departemento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
-			FROM T_Departameto AS C
+			SELECT C.ID_Departamento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
+			FROM T_Departamento AS C
 		end
 	Else
 		begin
 			IF ((ISNUMERIC(@valor)=1))
 				 BEGIN
-					SELECT C.ID_Departemento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
-					FROM T_Departameto AS C
+					SELECT C.ID_Departamento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
+					FROM T_Departamento AS C
 					WHERE (C.ID_Departamento = @valor) ORDER BY C.ID_Departamento
 				 END
 			ELSE
 				BEGIN
-					SELECT C.ID_Departemento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
-					FROM T_Departameto AS C
+					SELECT C.ID_Departamento, C.Nombre, C.Descripcion, C.Estado, C.Fecha_Registro
+					FROM T_Departamento AS C
 					WHERE (C.Nombre Like '%'+@valor + '%') OR
 					(C.Descripcion Like '%'+@valor + '%') OR
 					(C.Estado Like '%'+@valor + '%') OR
@@ -324,8 +331,6 @@ as
 					ORDER BY C.ID_Departamento
 				END
 		end
-
-
 /* ------------------------------- Reportes de Departamento  FIN--------------------------------- */
 
 

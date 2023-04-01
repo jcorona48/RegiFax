@@ -447,7 +447,6 @@ as
 /* -------------- GUARDAR PRODUCTO --------------*/
 go
 
-
 CREATE PROC SP_REGISTRARPRODUCTO
 (
 	@Codigo varchar (30),
@@ -463,7 +462,7 @@ CREATE PROC SP_REGISTRARPRODUCTO
 as 
 	begin
 		set @Resultado = 0
-		if not exists(select * from T_Producto where Nombre = @Nombre)
+		if not exists(select * from T_Producto where Nombre = @Nombre OR Codigo = @Codigo)
 		begin
 			insert into T_Producto(Codigo,Nombre, Precio, Cantidad, ID_Categoria, Estado) values
 			(@Codigo,@Nombre, @Precio, @Cantidad, @ID_Categoria, @Estado)
@@ -492,7 +491,7 @@ CREATE PROC SP_EDITARPRODUCTO
 as 
 	begin
 		set @Resultado = 1
-		if not exists(select * from T_Producto where Nombre = @Nombre and ID_Producto != @ID_Producto)
+		if not exists(select * from T_Producto where (Nombre = @Nombre OR Codigo = @Codigo) and ID_Producto != @ID_Producto)
 		begin
 			update T_Producto set
 			Codigo = @Codigo,
@@ -517,11 +516,6 @@ go
 CREATE PROC SP_ELIMINARPRODUCTO
 (
 	@ID_Producto int,
-	@Codigo varchar (30),
-	@Nombre varchar(50),
-	@Precio decimal(10,2),
-	@ID_Categoria int,
-	@Estado bit,
 	@Resultado int output,
 	@Mensaje varchar(500) output
 	)
@@ -611,9 +605,9 @@ as
 
 
 
-	/* ----------------------------------- PROCEDIMIENTOS VENTA -----------------------------------*/
+/* ----------------------------------- PROCEDIMIENTOS VENTA -----------------------------------*/
 
-	-------------------- Creacion de SubTabla para el detalle --------------------
+-------------------- Creacion de SubTabla para el detalle --------------------
 go
 create type [dbo].[EVenta_Detalle] as table(
 
